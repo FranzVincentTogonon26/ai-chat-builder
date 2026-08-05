@@ -22,7 +22,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <div className="fixed inset-0 -z-20 pointer-events-none">
           <div className="w-full h-full opacity-20">
             <div
-              data-us-project="franzvincenttogonon"
+              data-us-project="NMlvqnkICwYYJ6lYb064"
               className="absolute w-full h-full left-0 top-0"
             />
             <div className="absolute inset-0 bg-linear-to-t from-[#050509] via-transparent to-transparent opacity-80" />
