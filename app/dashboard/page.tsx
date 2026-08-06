@@ -1,5 +1,5 @@
-import InitialForm from "@/components/dashboard/initial-from";
 import React from "react";
+import InitialForm from "@/components/dashboard/initial-from";
 
 const Page = () => {
   return (
