@@ -1,10 +1,12 @@
-import Navbar from "@/components/landing";
 import React from "react";
+import Navbar from "@/components/landing/Navbar";
+import Hero from "@/components/landing/Hero";
 
 const page = () => {
   return (
     <main className="w-full flex flex-col relative z-10">
       <Navbar />
+      <Hero />
     </main>
   );
 };
