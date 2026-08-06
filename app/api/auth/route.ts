@@ -18,6 +18,8 @@ export async function GET() {
 
     const options = {
       scopes: ["openid", "profile", "email", "offline_access"],
+      state,
+      prompt: "login",
     };
 
     const authorizationUrl = scalekit.getAuthorizationUrl(redirectUri, options);
@@ -26,9 +28,8 @@ export async function GET() {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-        { error: "Failed to generate authorization URL"},
-        { status: 500 }
-    )
-    
+      { error: "Failed to generate authorization URL" },
+      { status: 500 },
+    );
   }
 }

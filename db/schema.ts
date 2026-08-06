@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { text, pgTable } from "drizzle-orm/pg-core";
 
-export const usersTable = pgTable("users", {
+export const user = pgTable("users", {
   id: text()
     .primaryKey()
     .default(sql`gen_random_uuid()`),

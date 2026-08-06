@@ -23,10 +23,13 @@ const Hero = () => {
         </p>
 
         <div className="flex  flex-col items-center justify-center ">
-          <button className="flex items-center justify-center text-center h-11 px-8 bg-white text-black rounded-full text-sm font-medium hover:bg-zinc-200 transition-all">
-            Start for free
+          <a
+            href="/api/auth"
+            className="flex items-center justify-center text-center h-11 px-8 bg-white text-black rounded-full text-sm font-medium hover:bg-zinc-200 transition-all"
+          >
+            Start now
             <ArrowRight className="w-4 h-4 ml-3" />
-          </button>
+          </a>
         </div>
       </div>
     </section>

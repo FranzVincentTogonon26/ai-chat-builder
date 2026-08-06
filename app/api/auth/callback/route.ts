@@ -1,5 +1,9 @@
+import { db } from "@/db";
 import scalekit from "@/lib/scalekit";
 import { NextRequest, NextResponse } from "next/server";
+
+import { user as User } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 interface IdTokenClaims {
   organization_id?: string;
@@ -35,10 +39,38 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ user, organizationId });
+    const existingUser = await db
+      .select()
+      .from(User)
+      .where(eq(User.email, user.email));
+
+    if (existingUser.length === 0) {
+      await db.insert(User).values({
+        name: user?.name || "anonymous",
+        email: user.email,
+        organization_id: organizationId,
+      });
+    }
+
+    const response = NextResponse.redirect(new URL("/", req.url));
+    const userSession = {
+      email: user.email,
+      organization_id: organizationId,
+    };
+
+    response.cookies.set("user_session", JSON.stringify(userSession), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
-      { error: "Authentication failed", detail: String(error) },
+      { error: "Authentication failed" },
       { status: 500 },
     );
   }

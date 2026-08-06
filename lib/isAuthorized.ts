@@ -1,0 +1,20 @@
+"use server";
+
+import { cookies } from "next/headers";
+
+export const isAuthrized = async () => {
+  const cookieStore = await cookies();
+  const userSession = cookieStore.get("user_session");
+
+  let user = null;
+
+  if (userSession) {
+    try {
+      user = JSON.parse(userSession.value);
+    } catch (error) {
+      console.log("Failed to parse user session", error);
+    }
+  }
+
+  return user;
+};
