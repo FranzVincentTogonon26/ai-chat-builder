@@ -9,9 +9,12 @@ export const useUser = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await isAuthrized();
-      setEmail(user.email);
-      setLoading(false);
+      try {
+        const user = await isAuthrized();
+        setEmail(user?.email ?? null);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchUser();
   }, []);
