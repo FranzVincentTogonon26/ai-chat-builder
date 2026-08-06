@@ -1,15 +1,14 @@
 import React from "react";
 import Link from "next/link";
+import { isAuthrized } from "@/lib/isAuthorized";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const user = await isAuthrized();
   return (
     <nav className="fixed top-0 inset-x-0 z-50 transition-all duration-300 backdrop-blur-sm border-b border-white/5 bg-[#050509]/50">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href={"/"} className="flex items-center justify-center gap-2">
-          {/* <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-            <div className="w-2.5 h-2.5 bg-black rounded-[1px]"></div>
-          </div> */}
-          <div className="w-8 h-8 ">
+          <div className="w-7 h-7 ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -30,6 +29,12 @@ const Navbar = () => {
             href={"#how-it-works"}
             className="hover:text-white transition-all"
           >
+            Features
+          </Link>
+          <Link
+            href={"#how-it-works"}
+            className="hover:text-white transition-all"
+          >
             Interration
           </Link>
           <Link href={"#pricing"} className="hover:text-white transition-all">
@@ -38,18 +43,32 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link
-            href={"/api/auth"}
-            className="text-xs  font-medium text-zinc-400 hover:text-white transition-all"
-          >
-            Sign In
-          </Link>
-          <Link
-            href={"/api/auth"}
-            className="text-xs  font-medium text-black px-4 py-2 rounded-full bg-zinc-200 transition-all"
-          >
-            Get started
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href={"/dashboard"}
+                className="flex text-xs font-medium h-10 px-4 rounded-xl bg-white text-black items-center hover:bg-zinc-200 transition-all gap-2 items-center"
+              >
+                Dashboard
+              </Link>
+            </div>
+          ) : (
+            <>
+              <a
+                href="/api/auth"
+                className="text-xs font-medium text-zinc-400 hover:text-white transition-all"
+              >
+                Sign In
+              </a>
+
+              <a
+                href="/api/auth"
+                className="text-xs font-medium text-black px-4 py-2 rounded-full bg-zinc-200 transition-all"
+              >
+                Get started
+              </a>
+            </>
+          )}
         </div>
       </div>
     </nav>
