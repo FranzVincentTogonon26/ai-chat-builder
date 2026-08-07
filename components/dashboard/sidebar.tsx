@@ -90,7 +90,7 @@ const Sidebar = () => {
       </nav>
 
       {/* Workspace */}
-      <div className="shrink-0 border-t border-white/5 p-4">
+      <div className="shrink-0 border-t border-white/10 p-4">
         <div className="group flex w-full items-center gap-3 rounded-md transition-colors hover:bg-white/5">
           {/* Avatar */}
           <div className="flex h-8 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-zinc-800">

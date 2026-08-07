@@ -4,15 +4,23 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import QuickActions from "@/components/dashboard/knowledge/quick-actions";
+import AddKnowledgeModal from "@/components/dashboard/knowledge/add-knowledge-modal";
 
 const Page = () => {
   const [defaultTab, setDefaultTab] = useState("website");
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [knowledgeStoringLoader, setKnowledgeStoringLoader] = useState(false);
+  const [knowledgeSourcesLoader, setKnowledgeSourcesLoader] = useState(true);
+  const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>(
+    [],
+  );
 
   const openModal = (tab: string) => {
     setDefaultTab(tab);
     setIsAddOpen(true);
   };
+
+  const handleImportSource = async (data: unknown) => {};
 
   return (
     <div className="p-6 md:p-8 space-y-8 max-w-7xl mx-auto animate-in fade-in duration-500">
@@ -38,6 +46,16 @@ const Page = () => {
       </div>
 
       <QuickActions onOpenModal={openModal} />
+
+      <AddKnowledgeModal
+        isOpen={isAddOpen}
+        setIsOpen={setIsAddOpen}
+        defaultTab={defaultTab}
+        setDefaultTab={setDefaultTab}
+        onImport={handleImportSource}
+        isLoading={knowledgeStoringLoader}
+        existingSources={knowledgeSources}
+      />
     </div>
   );
 };
