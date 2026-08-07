@@ -2,8 +2,8 @@ import { Briefcase, Building2, FileText } from "lucide-react";
 
 export interface InitialData {
   businessName: string;
-  websiteUrl: string;
-  externalLinks: string;
+  industry: string;
+  description: string;
 }
 
 export const STEPS = [

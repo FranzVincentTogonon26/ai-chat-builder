@@ -14,22 +14,26 @@ const InitialForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<InitialData>({
     businessName: "",
-    websiteUrl: "",
-    externalLinks: "",
+    industry: "",
+    description: "",
   });
 
-  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const progress = ((currentStep + 1) / STEPS.length) * 100;
   const stepData = STEPS[currentStep];
   const Icon = stepData.icon;
 
   useEffect(() => {
-    setTimeout(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
+    const timeout = setTimeout(() => {
+      if (STEPS[currentStep].type === "textarea") {
+        textareaRef.current?.focus();
+      } else {
+        inputRef.current?.focus();
       }
     }, 300);
+    return () => clearTimeout(timeout);
   }, [currentStep]);
 
   const handleBack = () => {
@@ -97,16 +101,16 @@ const InitialForm = () => {
       </div>
       {isSubmitting ? (
         <div className="flex flex-col items-center justify-center text-center animate-in fade-in duration-700">
-          <div className="relative mb-8 animate-bounce">
-            <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full animate-pulse" />
-            <div className="relative w-13 h-13 bg-linear-to-tr from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <div className="relative mb-2 animate-bounce">
+            <div className="absolute inset-0 bg-indigo-500/20 blur-2xl rounded-lg animate-pulse" />
+            <div className="relative w-13 h-13 bg-linear-to-tr from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
               <Sparkles className="w-6 h-6 text-white " />
             </div>
           </div>
           <h2 className="text-2xl font-medium text-white mb-2">
             Storing your Organization info.
           </h2>
-          <p className="text-zinc-500">Scanning {formData.websiteUrl}...</p>
+          <p className="text-zinc-500">Scanning {formData.industry}</p>
         </div>
       ) : (
         <div
@@ -129,7 +133,7 @@ const InitialForm = () => {
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
               )}
-              <span className="text-xs font-medium text-indigo-400 uppercase tracking-wider bg-indigo-500/10 border border-indigo-400/20 py-1 px-3 rounded">
+              <span className="text-xs font-medium text-indigo-400 uppercase tracking-wider bg-indigo-500/10 border border-indigo-400/20 py-2 px-4 rounded-full">
                 Step {currentStep + 1} of {STEPS.length}
               </span>
             </div>
@@ -137,7 +141,7 @@ const InitialForm = () => {
 
           <div className="space-y-6">
             <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-medium text-white leading-tight">
+              <h1 className="text-2xl md:text-3xl font-medium text-white leading-tight">
                 {stepData.question}
               </h1>
               <p className="text-lg text-zinc-500 font-light">
@@ -148,7 +152,7 @@ const InitialForm = () => {
             <div className="relative group">
               {stepData.type === "textarea" ? (
                 <Textarea
-                  ref={inputRef as any}
+                  ref={textareaRef}
                   value={formData[stepData.field] as string}
                   onChange={(e) => {
                     setFormData({
@@ -163,7 +167,7 @@ const InitialForm = () => {
                 />
               ) : (
                 <Input
-                  ref={inputRef as any}
+                  ref={inputRef}
                   type={stepData.type}
                   value={formData[stepData.field] as string}
                   onChange={(e) => {
@@ -174,7 +178,7 @@ const InitialForm = () => {
                   }}
                   onKeyDown={handleKeyDown}
                   placeholder={stepData.placeholder}
-                  className="w-full bg-transparent border-0 border-b border-white/10 text-xl md:text-2xl py-4 pr-12 text-white placeholder:text-zinc-700 focus-visible:ring-0 focus-visible:border-indigo-500 rounded-none h-auto shadow-none transition-colors"
+                  className="w-full bg-transparent border-0 border-b border-white/10 text-lg md:text-2xl py-4 pr-12 text-white placeholder:text-zinc-700 focus-visible:ring-0 focus-visible:border-indigo-500 rounded-none h-auto shadow-none transition-colors"
                   autoFocus
                 />
               )}
