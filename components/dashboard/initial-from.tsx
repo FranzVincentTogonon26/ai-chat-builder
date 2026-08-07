@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { InitialData, STEPS } from "../../constant/initial-step";
+import { InitialData, STEPS } from "../../constant";
 import { ArrowRight, ChevronLeft, Command, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -80,8 +80,22 @@ const InitialForm = () => {
     }
   };
 
-  const handleSubmit = () => {
-    setIsSubmitting(true);
+  const handleSubmit = async () => {
+    const response = await fetch("/api/metadata/store", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        business_name: formData.businessName,
+        industry: formData.industry,
+        description: formData.description,
+      }),
+    });
+
+    await response.json();
+    setIsSubmitting(false);
+    window.location.reload();
   };
 
   const isStepValid =
