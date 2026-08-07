@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import Sidebar from "@/components/dashboard/sidebar";
 
 export const metadata = {
   title: "AI Chatbot Support - Dashboard",
@@ -14,7 +15,17 @@ export default async function DashboardLayout({
 
   return (
     <section className="bg-[#050509] min-h-screen font-sans antialiased text-zinc-100 selection:bg-zinc-800 flex">
-      {metadataCookie?.value ? <>{children}</> : children}
+      {metadataCookie?.value ? (
+        <>
+          <Sidebar />
+          <div className="flex-1 flex flex-col md:ml-64 relative min-h-screen transition-all duration-300">
+            {/* <Header /> */}
+            <main className="flex-1">{children}</main>
+          </div>
+        </>
+      ) : (
+        children
+      )}
     </section>
   );
 }

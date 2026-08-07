@@ -1,9 +1,19 @@
-import { Briefcase, Building2, FileText } from "lucide-react";
+import {
+  BookOpen,
+  Bot,
+  Briefcase,
+  Building2,
+  FileText,
+  Layers,
+  LayoutDashboard,
+  MessageSquare,
+  Settings,
+} from "lucide-react";
 
 export interface InitialData {
   businessName: string;
-  websiteUrl: string;
-  externalLinks: string;
+  industry: string;
+  description: string;
 }
 
 export const STEPS = [
@@ -37,4 +47,17 @@ export const STEPS = [
     type: "text",
     field: "description" as keyof InitialData,
   },
+];
+
+export const SIDEBAR_ITEMS = [
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Knowledge", href: "/dashboard/knowledge", icon: BookOpen },
+  { label: "Sections", href: "/dashboard/sections", icon: Layers },
+  { label: "Chatbot", href: "/dashboard/chatbot", icon: Bot },
+  {
+    label: "Conversations",
+    href: "/dashboard/conversations",
+    icon: MessageSquare,
+  },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
