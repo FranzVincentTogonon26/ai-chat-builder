@@ -1,5 +1,5 @@
-import Sidebar from "@/components/dashboard/sidebar";
 import { cookies } from "next/headers";
+import Sidebar from "@/components/dashboard/sidebar";
 
 export const metadata = {
   title: "AI Chatbot Support - Dashboard",

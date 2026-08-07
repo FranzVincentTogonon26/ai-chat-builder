@@ -31,7 +31,9 @@ const Page = () => {
           <InitialForm />
         </div>
       ) : (
-        <></>
+        <>
+          <div className="">xxxxx</div>
+        </>
       )}
     </div>
   );
