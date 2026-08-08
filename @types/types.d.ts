@@ -13,3 +13,17 @@ interface KnowledgeSource {
   last_updated: string | null;
   created_at: string | null;
 }
+
+type ImportData = {
+  type: string;
+  url?: string;
+  title?: string;
+  content?: string;
+  file?: File;
+};
+
+interface KnowledgeTableProps {
+  sources: KnowledgeSource[];
+  onSourceClick: (source: KnowledgeSource) => void;
+  isLoading: boolean;
+}

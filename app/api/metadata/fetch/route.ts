@@ -1,13 +1,13 @@
 import { db } from "@/db";
 import { metadata } from "@/db/schema";
-import { isAuthrized } from "@/lib/isAuthorized";
+import { isAuthorized } from "@/lib/isAuthorized";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await isAuthrized();
+    const user = await isAuthorized();
     if (!user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

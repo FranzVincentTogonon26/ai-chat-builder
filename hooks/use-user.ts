@@ -1,6 +1,5 @@
 "use client";
 
-import { isAuthrized } from "@/lib/isAuthorized";
 import { useEffect, useState } from "react";
 
 export const useUser = () => {
@@ -10,12 +9,17 @@ export const useUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await isAuthrized();
-        setEmail(user?.email ?? null);
+        const response = await fetch("/api/user");
+        const data = await response.json();
+
+        setEmail(data?.user?.email ?? null);
+      } catch (error) {
+        console.error("Failed to fetch user", error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchUser();
   }, []);
 

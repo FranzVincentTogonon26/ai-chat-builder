@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import QuickActions from "@/components/dashboard/knowledge/quick-actions";
 import AddKnowledgeModal from "@/components/dashboard/knowledge/add-knowledge-modal";
+import KnowledgeTable from "@/components/dashboard/knowledge/knowledge-table";
 
 const Page = () => {
   const [defaultTab, setDefaultTab] = useState("website");
@@ -14,13 +15,91 @@ const Page = () => {
   const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>(
     [],
   );
+  const [selectedSource, setSelectedSource] = useState<KnowledgeSource | null>(
+    null,
+  );
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchSources = async () => {
+      try {
+        const res = await fetch("/api/knowledge/fetch");
+        if (!res.ok) throw new Error("Failed to load sources");
+        const data = await res.json();
+        setKnowledgeSources(data.sources ?? []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setKnowledgeSourcesLoader(false);
+      }
+    };
+
+    fetchSources();
+  }, []);
 
   const openModal = (tab: string) => {
     setDefaultTab(tab);
     setIsAddOpen(true);
   };
 
-  const handleImportSource = async (data: unknown) => {};
+  const handleImportSource = async (
+    data: ImportData,
+  ): Promise<string | null> => {
+    setKnowledgeStoringLoader(true);
+
+    try {
+      let response;
+
+      if (data.type === "upload" && data.file) {
+        const formData = new FormData();
+        formData.append("type", "upload");
+        formData.append("file", data.file);
+
+        response = await fetch("/api/knowledge/store", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        response = await fetch("/api/knowledge/store", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+      }
+
+      if (!response.ok) {
+        let message = "Failed to store source";
+        try {
+          const body = await response.json();
+          if (body?.error) message = body.error;
+        } catch {
+          // ignore parse failures
+        }
+        return message;
+      }
+
+      const res = await fetch("/api/knowledge/fetch");
+      if (!res.ok) return "Failed to refresh knowledge sources";
+
+      const newData = await res.json();
+
+      setKnowledgeSources(newData.sources ?? []);
+      setIsAddOpen(false);
+      return null;
+    } catch (error) {
+      console.error(error);
+      return "Failed to store source. Please try again.";
+    } finally {
+      setKnowledgeStoringLoader(false);
+    }
+  };
+
+  const handleSourceClick = (source: KnowledgeSource) => {
+    setSelectedSource(source);
+    setIsSheetOpen(true);
+  };
 
   return (
     <div className="p-6 md:p-8 space-y-8 max-w-7xl mx-auto animate-in fade-in duration-500">
@@ -46,6 +125,12 @@ const Page = () => {
       </div>
 
       <QuickActions onOpenModal={openModal} />
+
+      <KnowledgeTable
+        sources={knowledgeSources}
+        onSourceClick={handleSourceClick}
+        isLoading={knowledgeSourcesLoader}
+      />
 
       <AddKnowledgeModal
         isOpen={isAddOpen}

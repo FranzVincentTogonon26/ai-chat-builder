@@ -19,7 +19,7 @@ interface AddKnowledgeModalProps {
   setIsOpen: (open: boolean) => void;
   defaultTab: string;
   setDefaultTab: (tab: string) => void;
-  onImport: (data: unknown) => Promise<void>;
+  onImport: (data: ImportData) => Promise<string | null>;
   isLoading: boolean;
   existingSources: KnowledgeSource[];
 }
@@ -50,7 +50,7 @@ const AddKnowledgeModal = ({
 
   const handleImportWrapper = async () => {
     setError(null);
-    const data = { type: defaultTab, url: websiteUrl };
+    const data: ImportData = { type: defaultTab };
 
     if (defaultTab === "website") {
       if (!websiteUrl) {
@@ -76,9 +76,39 @@ const AddKnowledgeModal = ({
       }
 
       data.url = websiteUrl;
-    }
-  };
+    } else if (defaultTab === "text") {
+      if (!docsTitle.trim()) {
+        setError("Please provide  title.");
+        return;
+      }
+      if (!docsContent.trim()) {
+        setError("Please provide  content.");
+        return;
+      }
 
+      data.title = docsTitle;
+      data.content = docsContent;
+    } else if (defaultTab === "upload") {
+      if (!uploadedFile) {
+        setError("Please select a file to upload.");
+        return;
+      }
+
+      data.file = uploadedFile;
+    }
+
+    const importError = await onImport(data);
+    if (importError) {
+      setError(importError);
+      return;
+    }
+
+    setWebsiteUrl("");
+    setDocsTitle("");
+    setDocsContent("");
+    setUploadedFile(null);
+    setError(null);
+  };
   return (
     <Dialog
       open={isOpen}

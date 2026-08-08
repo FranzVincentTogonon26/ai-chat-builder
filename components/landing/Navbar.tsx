@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import { isAuthrized } from "@/lib/isAuthorized";
+import { isAuthorized } from "@/lib/isAuthorized";
 
 const Navbar = async () => {
-  const user = await isAuthrized();
+  const user = await isAuthorized();
   return (
     <nav className="fixed top-0 inset-x-0 z-50 transition-all duration-300 backdrop-blur-sm border-b border-white/5 bg-[#050509]/50">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
