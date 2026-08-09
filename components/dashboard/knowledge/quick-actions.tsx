@@ -57,7 +57,7 @@ const QuickActions = ({
         </div>
         <div className="">
           <span className="text-sm font-medium block whitespace-normal">
-            Upload file
+            Manual Text
           </span>
           <p className="text-xs text-zinc-500 font-normal leading-relaxed whitespace-normal wrap-break-word">
             Manually copy-paste FAQs, internal notes, or policies directly into

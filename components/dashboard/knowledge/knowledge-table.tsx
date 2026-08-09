@@ -14,7 +14,7 @@ import {
 import { File, Filter, Globe, Search, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-const getTypeIcon = (type: SourceType) => {
+export const getTypeIcon = (type: SourceType) => {
   switch (type) {
     case "website":
       return <Globe className="w-4 h-4 text-blue-400" />;
@@ -25,7 +25,7 @@ const getTypeIcon = (type: SourceType) => {
   }
 };
 
-const getStatusBadge = (status: SourceStatus) => {
+export const getStatusBadge = (status: SourceStatus) => {
   switch (status) {
     case "active":
       return (
