@@ -1,6 +1,8 @@
 type SourceType = "website" | "docs" | "upload" | "text";
 type SourceStatus = "active" | "training" | "error" | "excluded";
 
+// Knowledge
+
 interface KnowledgeSource {
   id: string;
   user_email: string;
@@ -26,4 +28,55 @@ interface KnowledgeTableProps {
   sources: KnowledgeSource[];
   onSourceClick: (source: KnowledgeSource) => void;
   isLoading: boolean;
+}
+
+// Sections
+
+type SectionStatus = "active" | "draft" | "disabled";
+type Tone = "strict" | "neutral" | "friendly" | "empathetic";
+
+interface Section {
+  id: string;
+  name: string;
+  description: string;
+  sourceCount: number;
+  source_ids?: string[];
+  tone: Tone;
+  scopeLabel: string;
+  allowed_topics?: string[];
+  blocked_topics?: string[];
+  status: SectionStatus;
+}
+
+interface SectionRecord {
+  id: string;
+  name: string;
+  description: string;
+  source_ids: string[] | null;
+  tone: string;
+  allowed_topics: string[] | null;
+  blocked_topics: string[] | null;
+  status: string;
+}
+
+interface SectionsTableProps {
+  sections: Section[];
+  onSectionClick: (section: Section) => void;
+  isLoading: boolean;
+}
+
+interface SectionKnowledgeSource {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+}
+
+interface FormDataSection {
+  name: string;
+  description: string;
+  tone: Tone;
+  allowedTopics: string;
+  blockedTopics: string;
+  fallbackBehavior: string;
 }

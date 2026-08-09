@@ -61,3 +61,27 @@ export const SIDEBAR_ITEMS = [
   },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
+
+export const TONE_OPTIONS = [
+  {
+    value: "strict",
+    label: "Strict",
+    badge: "Fact-based",
+    description: "Only answer if fully confident. No small talk.",
+  },
+  {
+    value: "neutral",
+    label: "Neutral",
+    description: "Professional, concise, and direct.",
+  },
+  {
+    value: "friendly",
+    label: "Friendly",
+    description: "Warm and conversational. Good for general FAQ.",
+  },
+  {
+    value: "empathetic",
+    label: "Empathetic",
+    description: "Support-first, apologetic, and calming.",
+  },
+];

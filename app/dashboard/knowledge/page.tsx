@@ -8,7 +8,7 @@ import AddKnowledgeModal from "@/components/dashboard/knowledge/add-knowledge-mo
 import KnowledgeTable from "@/components/dashboard/knowledge/knowledge-table";
 import SourceDetailsSheet from "@/components/dashboard/knowledge/source-details-sheet";
 
-const Page = () => {
+const KnowledgePage = () => {
   const [defaultTab, setDefaultTab] = useState("website");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [knowledgeStoringLoader, setKnowledgeStoringLoader] = useState(false);
@@ -22,31 +22,26 @@ const Page = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchSources = async () => {
       try {
         const res = await fetch("/api/knowledge/fetch");
         if (!res.ok) throw new Error("Failed to load sources");
         const data = await res.json();
-        setKnowledgeSources(data.sources ?? []);
+        if (isMounted) setKnowledgeSources(data.sources ?? []);
       } catch (error) {
         console.error(error);
       } finally {
-        setKnowledgeSourcesLoader(false);
+        if (isMounted) setKnowledgeSourcesLoader(false);
       }
     };
 
     fetchSources();
-  }, []);
 
-  useEffect(() => {
-    const fetchKnowledgeSources = async () => {
-      const res = await fetch("/api/knowledge/fetch");
-      const data = await res.json();
-      setKnowledgeSources(data.sources);
-      setKnowledgeSourcesLoader(false);
+    return () => {
+      isMounted = false;
     };
-
-    fetchKnowledgeSources();
   }, []);
 
   const openModal = (tab: string) => {
@@ -130,7 +125,7 @@ const Page = () => {
             onClick={() => openModal("website")}
             className="bg-white text-black hover:bg-zinc-200"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-4 h-4 mr-1" />
             Add Knowledge
           </Button>
         </div>
@@ -163,4 +158,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default KnowledgePage;

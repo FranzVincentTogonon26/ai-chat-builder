@@ -24,7 +24,7 @@ const SourceDetailsSheet = ({
   if (!selectedSource) return null;
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full sm:max-w-md border-l border-white/10 bg-[#0A0A0E] p-0 shadow-2xl">
+      <SheetContent className="w-full sm:max-w-3xl border-l border-white/10 bg-[#0A0A0E] p-0 shadow-2xl flex flex-col h-full">
         <div className="h-full flex flex-col">
           <SheetHeader className="p-6 border-b border-white/5">
             <SheetTitle className="text-xl text-white flex items-center gap-2">

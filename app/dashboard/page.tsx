@@ -32,7 +32,7 @@ const Page = () => {
         </div>
       ) : (
         <>
-          <div className="">xxxxx</div>
+          <div className="">Dashboard Content</div>
         </>
       )}
     </div>

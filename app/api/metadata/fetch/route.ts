@@ -3,9 +3,9 @@ import { metadata } from "@/db/schema";
 import { isAuthorized } from "@/lib/isAuthorized";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const user = await isAuthorized();
     if (!user)

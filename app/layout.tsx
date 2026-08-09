@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,6 +35,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();`,
+          }}
+        />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: "#ffffff",
+              color: "#16161d",
+              border: "1px solid #e9e8f3",
+              borderRadius: "999px",
+              padding: "0.6rem 1rem",
+              boxShadow: "0 8px 24px rgba(28,27,64,0.1)",
+              fontSize: "0.875rem",
+              fontWeight: 500,
+            },
           }}
         />
       </body>
