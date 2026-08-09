@@ -41,7 +41,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-white/5 bg-[#050509]">
+    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-white/7 bg-[#050509]">
       {/* Header */}
       <div className="flex h-16 shrink-0 items-center border-b border-white/5 px-6">
         <Link href={"/"} className="flex items-center gap-2">

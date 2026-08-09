@@ -43,9 +43,26 @@ interface Section {
   source_ids?: string[];
   tone: Tone;
   scopeLabel: string;
-  allowed_topics?: string;
-  blocked_topics?: string;
+  allowed_topics?: string[];
+  blocked_topics?: string[];
   status: SectionStatus;
+}
+
+interface SectionRecord {
+  id: string;
+  name: string;
+  description: string;
+  source_ids: string[] | null;
+  tone: string;
+  allowed_topics: string[] | null;
+  blocked_topics: string[] | null;
+  status: string;
+}
+
+interface SectionsTableProps {
+  sections: Section[];
+  onSectionClick: (section: Section) => void;
+  isLoading: boolean;
 }
 
 interface SectionKnowledgeSource {

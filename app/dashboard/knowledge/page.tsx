@@ -22,31 +22,26 @@ const KnowledgePage = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchSources = async () => {
       try {
         const res = await fetch("/api/knowledge/fetch");
         if (!res.ok) throw new Error("Failed to load sources");
         const data = await res.json();
-        setKnowledgeSources(data.sources ?? []);
+        if (isMounted) setKnowledgeSources(data.sources ?? []);
       } catch (error) {
         console.error(error);
       } finally {
-        setKnowledgeSourcesLoader(false);
+        if (isMounted) setKnowledgeSourcesLoader(false);
       }
     };
 
     fetchSources();
-  }, []);
 
-  useEffect(() => {
-    const fetchKnowledgeSources = async () => {
-      const res = await fetch("/api/knowledge/fetch");
-      const data = await res.json();
-      setKnowledgeSources(data.sources);
-      setKnowledgeSourcesLoader(false);
+    return () => {
+      isMounted = false;
     };
-
-    fetchKnowledgeSources();
   }, []);
 
   const openModal = (tab: string) => {

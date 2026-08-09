@@ -48,7 +48,6 @@ const SectionFormFields = ({
             disabled={isDisabled}
           />
         </div>
-
         <div className="space-y-2">
           <Label className="text-zinc-300">Description</Label>
           <Input
@@ -64,7 +63,6 @@ const SectionFormFields = ({
             Used by the routing model to decide when to activate this section
           </p>
         </div>
-
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
@@ -157,7 +155,6 @@ const SectionFormFields = ({
             </div>
           )}
         </div>
-
         <div className="space-y-4">
           <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
             Tone
@@ -191,11 +188,45 @@ const SectionFormFields = ({
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-zinc-500 font-normal">{option.description}</span>
+                  <span className="text-xs text-zinc-500 font-normal">
+                    {option.description}
+                  </span>
                 </Label>
               </div>
             ))}
           </RadioGroup>
+        </div>
+
+        <div className="space-y-4">
+          <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+            Scope Rules
+          </h4>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-zinc-300 text-xs">Allowed Topics</Label>
+              <Input
+                className="bg-white/2 border border-white/10 text-white placeholder:text-zinc-600"
+                placeholder="e.g. pricing, refunds"
+                value={formData.allowedTopics}
+                onChange={(e) => {
+                  setFormData({ ...formData, allowedTopics: e.target.value });
+                }}
+                disabled={isDisabled}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-zinc-300 text-xs">Blocked Topics</Label>
+              <Input
+                className="bg-white/2 border border-white/10 text-white placeholder:text-zinc-600"
+                placeholder="e.g. competitors"
+                value={formData.blockedTopics}
+                onChange={(e) => {
+                  setFormData({ ...formData, blockedTopics: e.target.value });
+                }}
+                disabled={isDisabled}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>

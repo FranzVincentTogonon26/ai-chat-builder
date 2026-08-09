@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import toast from "react-hot-toast";
+
 import {
   Sheet,
   SheetContent,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
 import SectionFormFields from "@/components/dashboard/sections/section-form-fields";
+import SectionsTable from "@/components/dashboard/sections/sections-table";
 
 const INITIAL_FORM_DATA: FormDataSection = {
   name: "",
@@ -21,6 +23,19 @@ const INITIAL_FORM_DATA: FormDataSection = {
   blockedTopics: "",
   fallbackBehavior: "escalate",
 };
+
+const transformSectionRecord = (section: SectionRecord): Section => ({
+  id: section.id,
+  name: section.name,
+  description: section.description,
+  sourceCount: section.source_ids?.length || 0,
+  source_ids: section.source_ids || [],
+  tone: section.tone as Tone,
+  scopeLabel: section.allowed_topics?.join(", ") || "General",
+  allowed_topics: section.allowed_topics || [],
+  blocked_topics: section.blocked_topics || [],
+  status: section.status as SectionStatus,
+});
 
 const SectionPage = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -51,7 +66,7 @@ const SectionPage = () => {
     fetchKnowledgeSources();
   }, []);
 
-  const handleCreateSection = async () => {
+  const handleCreateSection = () => {
     setSelectedSection({
       id: "new",
       name: "",
@@ -64,6 +79,147 @@ const SectionPage = () => {
     setSelectedSources([]);
     setFormData(INITIAL_FORM_DATA);
     setIsSheetOpen(true);
+  };
+
+  const handleViewSection = (section: Section) => {
+    setSelectedSection(section);
+    setFormData({
+      name: section.name,
+      description: section.description,
+      tone: section.tone,
+      allowedTopics: section.allowed_topics?.join(", ") || "",
+      blockedTopics: section.blocked_topics?.join(", ") || "",
+      fallbackBehavior: "escalate",
+    });
+    setSelectedSources(section.source_ids || []);
+    setIsSheetOpen(true);
+  };
+
+  const fetchSections = useCallback(async () => {
+    try {
+      const res = await fetch("/api/section/fetch");
+      if (!res.ok) throw new Error("Failed to load sections");
+      const data: SectionRecord[] = await res.json();
+
+      setSections(data.map(transformSectionRecord));
+    } catch (error) {
+      console.error("Failed to fetch sections:", error);
+    } finally {
+      setIsLoadingSections(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSections = async () => {
+      try {
+        const res = await fetch("/api/section/fetch");
+        if (!res.ok) throw new Error("Failed to load sections");
+        const data: SectionRecord[] = await res.json();
+        if (isMounted) setSections(data.map(transformSectionRecord));
+      } catch (error) {
+        console.error("Failed to fetch sections:", error);
+      } finally {
+        if (isMounted) setIsLoadingSections(false);
+      }
+    };
+
+    loadSections();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleSaveSection = async () => {
+    const name = formData.name.trim();
+    const description = formData.description.trim();
+
+    if (!name) {
+      toast.error("Please enter a section name.");
+      return;
+    }
+
+    if (!description) {
+      toast.error("Please enter a description.");
+      return;
+    }
+
+    if (selectedSources.length === 0) {
+      toast.error("Please select at least one knowledge source.");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const sectionData = {
+        ...formData,
+        name,
+        description,
+        sourceIds: selectedSources,
+        status: "active",
+      };
+
+      const response = await fetch("/api/section/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sectionData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Failed to create section.");
+      }
+
+      await fetchSections();
+
+      setIsSheetOpen(false);
+      toast.success("Section created successfully.");
+    } catch (error) {
+      console.error("Failed to save section:", error);
+      toast.error("Failed to create section. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteSection = async () => {
+    if (!selectedSection || selectedSection.id === "new") return;
+
+    if (!window.confirm(`Delete section "${selectedSection.name}"?`)) return;
+
+    setIsSaving(true);
+
+    try {
+      const response = await fetch("/api/section/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: selectedSection.id }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Failed to delete section.");
+      }
+
+      await fetchSections();
+
+      setIsSheetOpen(false);
+      toast.success("Section deleted successfully.");
+    } catch (error) {
+      console.error("Failed to delete section:", error);
+      toast.error("Failed to delete section. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const isPreviewMode = selectedSection?.id !== "new";
@@ -90,12 +246,14 @@ const SectionPage = () => {
         </div>
       </div>
 
-      <Card className="border border-white/5 bg-[#0A0A0E]">
-        <CardContent className="p-0">XXX</CardContent>
-      </Card>
+      <SectionsTable
+        sections={sections}
+        onSectionClick={handleViewSection}
+        isLoading={isLoadingSections}
+      />
 
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent className="w-full sm:max-w-lg border-l border-white/10 bg-[#0A0A0E] p-0 shadow-2xl flex flex-col h-full">
+        <SheetContent className="w-full sm:max-w-3xl border-l border-white/10 bg-[#0A0A0E] p-0 shadow-2xl flex flex-col h-full">
           {selectedSection && (
             <>
               <SheetHeader className="p-6 border-b border-white/5">
@@ -107,7 +265,7 @@ const SectionPage = () => {
                 <SheetDescription className="text-zinc-500">
                   {selectedSection.id === "new"
                     ? "Configure how the AI behaves for this specific topic."
-                    : "Review section configuration abd data sources."}
+                    : "Review section configuration and data sources."}
                 </SheetDescription>
               </SheetHeader>
 
@@ -122,6 +280,39 @@ const SectionPage = () => {
                   isDisabled={isPreviewMode}
                 />
               </div>
+
+              {selectedSection.id === "new" && (
+                <div className="p-6 border-t border-white/5">
+                  <Button
+                    className={`w-full bg-white cursor-pointer font-semibold h-10 text-black hover:bg-zinc-200 ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
+                    onClick={handleSaveSection}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? "Creating..." : "Create Section"}
+                  </Button>
+                </div>
+              )}
+
+              {selectedSection.id !== "new" && (
+                <div className="p-6 bg-red-500/5 border-t border-red-500/10">
+                  <h5 className="text-sm font-medium text-red-400 mb-1">
+                    Danger Zone
+                  </h5>
+                  <p className="text-xs text-red-500/70 mb-3">
+                    Deleting this section will remove all associated routing
+                    rules.
+                  </p>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleDeleteSection}
+                    disabled={isSaving}
+                    className="w-full bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 shadow-none h-10"
+                  >
+                    {isSaving ? "Deleting..." : "Delete Section"}
+                  </Button>
+                </div>
+              )}
             </>
           )}
         </SheetContent>
