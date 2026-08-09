@@ -8,7 +8,7 @@ import AddKnowledgeModal from "@/components/dashboard/knowledge/add-knowledge-mo
 import KnowledgeTable from "@/components/dashboard/knowledge/knowledge-table";
 import SourceDetailsSheet from "@/components/dashboard/knowledge/source-details-sheet";
 
-const Page = () => {
+const KnowledgePage = () => {
   const [defaultTab, setDefaultTab] = useState("website");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [knowledgeStoringLoader, setKnowledgeStoringLoader] = useState(false);
@@ -130,7 +130,7 @@ const Page = () => {
             onClick={() => openModal("website")}
             className="bg-white text-black hover:bg-zinc-200"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-4 h-4 mr-1" />
             Add Knowledge
           </Button>
         </div>
@@ -163,4 +163,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default KnowledgePage;
