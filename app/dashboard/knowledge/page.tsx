@@ -37,6 +37,17 @@ const Page = () => {
     fetchSources();
   }, []);
 
+  useEffect(() => {
+    const fetchKnowledgeSources = async () => {
+      const res = await fetch("/api/knowledge/fetch");
+      const data = await res.json();
+      setKnowledgeSources(data.sources);
+      setKnowledgeSourcesLoader(false);
+    };
+
+    fetchKnowledgeSources();
+  }, []);
+
   const openModal = (tab: string) => {
     setDefaultTab(tab);
     setIsAddOpen(true);
