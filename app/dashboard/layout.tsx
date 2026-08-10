@@ -1,4 +1,6 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { isAuthorized } from "@/lib/isAuthorized";
 import Sidebar from "@/components/dashboard/sidebar";
 
 export const metadata = {
@@ -10,6 +12,12 @@ export const metadata = {
 export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const user = await isAuthorized();
+
+  if (!user) {
+    redirect("/");
+  }
+
   const cookieStore = await cookies();
   const metadataCookie = cookieStore.get("metadata");
 

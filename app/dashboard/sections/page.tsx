@@ -14,6 +14,7 @@ import {
 import { Plus } from "lucide-react";
 import SectionFormFields from "@/components/dashboard/sections/section-form-fields";
 import SectionsTable from "@/components/dashboard/sections/sections-table";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 const INITIAL_FORM_DATA: FormDataSection = {
   name: "",
@@ -49,6 +50,7 @@ const SectionPage = () => {
   const [sections, setSections] = useState<Section[]>([]);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
   const [formData, setFormData] = useState<FormDataSection>(INITIAL_FORM_DATA);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   useEffect(() => {
     const fetchKnowledgeSources = async () => {
@@ -189,9 +191,9 @@ const SectionPage = () => {
   };
 
   const handleDeleteSection = async () => {
-    if (!selectedSection || selectedSection.id === "new") return;
+    setIsConfirmOpen(false);
 
-    if (!window.confirm(`Delete section "${selectedSection.name}"?`)) return;
+    if (!selectedSection || selectedSection.id === "new") return;
 
     setIsSaving(true);
 
@@ -269,7 +271,7 @@ const SectionPage = () => {
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-8">
+              <div className="flex-1 overflow-y-auto p-6 space-y-8  scroll-fade scrollbar-none  scroll-fade-none">
                 <SectionFormFields
                   formData={formData}
                   setFormData={setFormData}
@@ -305,7 +307,7 @@ const SectionPage = () => {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={handleDeleteSection}
+                    onClick={() => setIsConfirmOpen(true)}
                     disabled={isSaving}
                     className="w-full bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 shadow-none h-10"
                   >
@@ -317,6 +319,17 @@ const SectionPage = () => {
           )}
         </SheetContent>
       </Sheet>
+
+      <ConfirmDialog
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
+        title={`Delete section "${selectedSection?.name}"?`}
+        description="This action cannot be undone. It will remove all associated routing rules."
+        confirmLabel="Delete"
+        variant="destructive"
+        isLoading={isSaving}
+        onConfirm={handleDeleteSection}
+      />
     </div>
   );
 };
