@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const getToneBadge = (tone: Tone) => {
   const styles = {
@@ -35,22 +36,17 @@ const SectionsTable = ({
 }: SectionsTableProps) => {
   return (
     <Card className="border border-white/5 bg-[#0A0A0E]">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-base font-medium text-white">
-          Sections
-        </CardTitle>
-      </CardHeader>
       <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-white/5 hover:bg-transparent">
               <TableHead className="text-xs uppercase font-medium text-zinc-500">
-                Name
+                Name and Description
               </TableHead>
               <TableHead className="text-xs uppercase font-medium text-zinc-500">
                 Scope
               </TableHead>
-              <TableHead className="text-xs uppercase font-medium text-zinc-500">
+              <TableHead className="text-xs uppercase font-medium text-zinc-500 w-1">
                 Sources
               </TableHead>
               <TableHead className="text-xs uppercase font-medium text-zinc-500">
@@ -59,26 +55,35 @@ const SectionsTable = ({
               <TableHead className="text-xs uppercase font-medium text-zinc-500">
                 Status
               </TableHead>
+              <TableHead className="text-xs uppercase font-medium text-zinc-500">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i} className="border-white/5">
+                <TableRow
+                  key={i}
+                  className="border-white/5 hover:!bg-transparent"
+                >
                   <TableCell>
-                    <Skeleton className="h-5 w-32 bg-white/5" />
+                    <Skeleton className="h-5 w-32 bg-white/5 hover:bg-white/4" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-5 w-24 bg-white/5" />
+                    <Skeleton className="h-5 w-32 bg-white/5 hover:bg-white/4" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-5 w-12 bg-white/5" />
+                    <Skeleton className="h-5 w-32 bg-white/5 hover:bg-white/4" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-5 w-20 bg-white/5" />
+                    <Skeleton className="h-5 w-32 bg-white/5 hover:bg-white/4" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-5 w-16 bg-white/5" />
+                    <Skeleton className="h-5 w-32 bg-white/5 hover:bg-white/4" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-15 bg-white/5 hover:bg-white/4" />
                   </TableCell>
                 </TableRow>
               ))
@@ -86,8 +91,7 @@ const SectionsTable = ({
               sections.map((section) => (
                 <TableRow
                   key={section.id}
-                  className="border-b border-white/5 hover:bg-transparent cursor-pointer group transition-colors"
-                  onClick={() => onSectionClick(section)}
+                  className="border-b border-white/5 hover:bg-transparent  group transition-colors"
                 >
                   <TableCell>
                     <div className="flex flex-col">
@@ -102,12 +106,27 @@ const SectionsTable = ({
                   <TableCell className="text-zinc-400 text-sm">
                     {section.scopeLabel}
                   </TableCell>
-                  <TableCell className="text-zinc-400 text-sm">
+                  <TableCell className="text-zinc-400 text-sm text-center">
                     {section.sourceCount}
                   </TableCell>
                   <TableCell>{getToneBadge(section.tone)}</TableCell>
                   <TableCell className="capitalize text-zinc-400 text-sm">
-                    {section.status}
+                    <Badge
+                      variant="default"
+                      className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 shadow-none"
+                    >
+                      {section.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="capitalize text-zinc-400">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 text-zinc-400 hover:text-white hover:bg-white/2"
+                      onClick={() => onSectionClick(section)}
+                    >
+                      View
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))

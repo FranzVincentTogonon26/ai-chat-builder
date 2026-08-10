@@ -136,7 +136,7 @@ const KnowledgeTable = ({
                     <Skeleton className="h-5 w-32 bg-white/5 hover:bg-white/4" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-5 w-32 bg-white/5 hover:bg-white/4" />
+                    <Skeleton className="h-5 w-15 bg-white/5 hover:bg-white/4" />
                   </TableCell>
                 </TableRow>
               ))
@@ -144,8 +144,7 @@ const KnowledgeTable = ({
               sources.map((source, index) => (
                 <TableRow
                   key={index}
-                  className="border border-white/5 hover:bg-white/2 cursor-pointer group transition-colors"
-                  onClick={() => onSourceClick(source)}
+                  className="border border-white/5 hover:bg-white/2 group transition-colors"
                 >
                   <TableCell className="font-medium text-zinc-200 group-hover:text-white flex items-center gap-3">
                     {getTypeIcon(source.type as SourceType)}
@@ -173,6 +172,7 @@ const KnowledgeTable = ({
                       variant="ghost"
                       size="sm"
                       className="h-8 text-zinc-400 hover:text-white hover:bg-white/2"
+                      onClick={() => onSourceClick(source)}
                     >
                       View
                     </Button>

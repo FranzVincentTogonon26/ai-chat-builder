@@ -137,6 +137,7 @@ const SectionFormFields = ({
                         {source.name}
                       </span>
                       <Button
+                        disabled={isDisabled}
                         variant="ghost"
                         size="sm"
                         className="h-6 w-6 p-0 text-zinc-500 hover:text-red-400 "
