@@ -80,3 +80,15 @@ interface FormDataSection {
   blockedTopics: string;
   fallbackBehavior: string;
 }
+
+// Chatbot
+
+
+interface ChatbotMetadata {
+  id: string,
+  user_email: string,
+  color: string,
+  welcome_message: string,
+  created_at: string,
+  source_ids: string[]
+}
