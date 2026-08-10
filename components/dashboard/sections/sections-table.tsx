@@ -91,7 +91,7 @@ const SectionsTable = ({
               sections.map((section) => (
                 <TableRow
                   key={section.id}
-                  className="border-b border-white/5 hover:bg-transparent  group transition-colors"
+                  className="border border-white/5 hover:bg-white/2 group transition-colors"
                 >
                   <TableCell>
                     <div className="flex flex-col">
@@ -133,8 +133,8 @@ const SectionsTable = ({
             ) : (
               <TableRow className="hover:!bg-transparent">
                 <TableCell
-                  colSpan={5}
-                  className="h-32 text-center text-zinc-500"
+                  colSpan={6}
+                  className="h-32  text-center text-zinc-500"
                 >
                   No sections yet. Create one to define AI behavior for a topic.
                 </TableCell>
