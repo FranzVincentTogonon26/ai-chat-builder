@@ -150,7 +150,7 @@ const ChatSimulator = ({
                 ? "Type a message.."
                 : "Please select a category above to start.."
             }
-            className="min-h-12.5 max-h-37.5 pr-12 outline-none  border-white/5 bg-[#0A0A0E] disabled:bg-[#0A0A0E] text-white"
+            className="min-h-12.5 max-h-37.5 pr-12 outline-none  border-white/5 bg-[#0A0A0E] disabled:bg-[#0A0A0E] text-white resize-none"
           />
           <Button
             size="icon"

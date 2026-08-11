@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatSimulator from "@/components/dashboard/chatbot/chat-simulator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ApperanceConfig from "@/components/dashboard/chatbot/appearance-config";
 
 const ChatbotPage = () => {
   const [metadata, setMetadata] = useState<ChatbotMetadata | null>(null);
@@ -109,6 +110,14 @@ const ChatbotPage = () => {
     ]);
   };
 
+  const handleSave = async () => {};
+
+  const hasChanges = metadata
+    ? primaryColor !== (metadata.color || "#4f46e5") ||
+      welcomeMessage !==
+        (metadata.welcome_message || "Hi, How can I help you today?")
+    : false;
+
   return (
     <div className="flex h-dvh flex-col p-6 md:p-8 space-y-8 max-w-7xl mx-auto animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -141,8 +150,18 @@ const ChatbotPage = () => {
         </div>
 
         <div className="lg:col-span-5 h-full min-h-0 overflow-hidden flex flex-col">
-          <ScrollArea>
-            <div className=""></div>
+          <ScrollArea className="h-full pr-4">
+            <div className="space-y-6 pb-8">
+              <ApperanceConfig
+                primaryColor={primaryColor}
+                setPrimaryColor={setPrimaryColor}
+                welcomeMessage={welcomeMessage}
+                setWelcomeMessage={setWelcomeMessage}
+                handleSave={handleSave}
+                isSaving={isSaving}
+                hasChanges={hasChanges}
+              />
+            </div>
           </ScrollArea>
         </div>
       </div>
