@@ -36,8 +36,8 @@ const ChatSimulator = ({
   scrollRef,
 }: ChatbotSimulatorProps) => {
   return (
-    <Card className="flex flex-1 flex-col border-white/5 bg-[#0A0A0E] overflow-hidden relative shadow-2xl">
-      <div className="h-14 border-b border-white/5 flex items-center justify-between px-6 bg-[#0E0E12] ">
+    <Card className="flex min-h-0 flex-1 flex-col border-white/5 bg-[#0A0A0E] overflow-hidden relative shadow-2xl p-0">
+      <div className="h-14 border-b border-white/5 flex items-center justify-between px-6 bg-transparent">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
           <span className="text-sm font-medium text-zinc-300">
@@ -55,14 +55,14 @@ const ChatSimulator = ({
         </Button>
       </div>
 
-      <ScrollArea className="flex-1 p-6 relative bg-zinc-950/30">
+      <ScrollArea className="min-h-0 flex-1 p-6 relative bg-zinc-950/30">
         <div className="space-y-6 pb-4">
           {messages.map((msg, i) => (
             <div
               key={i}
               className={cn(
                 `flex w-full flex-col`,
-                msg.role === "user" ? "items-center" : "items-start",
+                msg.role === "user" ? "items-end" : "items-start",
               )}
             >
               <div
@@ -92,20 +92,20 @@ const ChatSimulator = ({
                     className={cn(
                       `p-4 rounded-xl text-sm leading-relaxed shadow-sm `,
                       msg.role === "user"
-                        ? "bg-zinc-800 text-zinc-200 rounded-tr-sm"
-                        : "bg-white text-zinc-900 rounded-tl-sm ",
+                        ? "bg-zinc-800 text-zinc-200 rounded-tr-xs"
+                        : "bg-white text-zinc-900 rounded-tl-xs ",
                     )}
                   >
                     {msg.content}
                   </div>
 
                   {msg.isWelcome && sections.length > 0 && (
-                    <div className="flex flex-wrap gap-2 pt-1 ml-1 animate-in fade-in slide-in-from-top-1 duration-300">
+                    <div className="flex flex-wrap gap-2 pt-2 ml-1 animate-in fade-in slide-in-from-top-1 duration-300">
                       {sections.map((section) => (
                         <button
                           key={section.id}
                           onClick={() => handleSectionClick(section.name)}
-                          className="px-3 py-1.5 rounded-full border border-zinc-600"
+                          className="px-3 py-1.5 rounded-full border border-zinc-600 text-white text-xs bg-white/5 hover:bg-white/10 cursor-pointer"
                         >
                           {section.name}
                         </button>
@@ -150,7 +150,7 @@ const ChatSimulator = ({
                 ? "Type a message.."
                 : "Please select a category above to start.."
             }
-            className="min-h-12.5 max-h-37.5 pr-12 outline-none  border-white/5 bg-[#0A0A0E] disabled:bg-[#0A0A0E] "
+            className="min-h-12.5 max-h-37.5 pr-12 outline-none  border-white/5 bg-[#0A0A0E] disabled:bg-[#0A0A0E] text-white"
           />
           <Button
             size="icon"
