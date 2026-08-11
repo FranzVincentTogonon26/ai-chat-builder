@@ -83,6 +83,14 @@ interface FormDataSection {
 
 // Chatbot
 
+type ChatRole = "user" | "assistant";
+
+interface ChatMessage {
+  role: ChatRole;
+  content: string;
+  isWelcome?: boolean;
+  section: string | null;
+}
 
 interface ChatbotMetadata {
   id: string,

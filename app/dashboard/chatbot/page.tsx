@@ -4,12 +4,13 @@ import React, { useEffect, useRef, useState } from "react";
 import ChatSimulator from "@/components/dashboard/chatbot/chat-simulator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ApperanceConfig from "@/components/dashboard/chatbot/appearance-config";
+import EmbedCodeConfig from "@/components/dashboard/chatbot/embed-code-config";
 
 const ChatbotPage = () => {
   const [metadata, setMetadata] = useState<ChatbotMetadata | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -78,7 +79,7 @@ const ChatbotPage = () => {
 
   const handleSectionClick = async (sectionName: string) => {
     setActiveSection(sectionName);
-    const userMsg = {
+    const userMsg: ChatMessage = {
       role: "user",
       content: sectionName,
       section: null,
@@ -89,7 +90,7 @@ const ChatbotPage = () => {
 
     setTimeout(() => {
       setIsTyping(false);
-      const aiMsg = {
+      const aiMsg: ChatMessage = {
         role: "assistant",
         content: `You can ask me any question related to "${sectionName}"`,
         section: sectionName,
@@ -161,6 +162,8 @@ const ChatbotPage = () => {
                 isSaving={isSaving}
                 hasChanges={hasChanges}
               />
+
+              <EmbedCodeConfig chatbotId={metadata?.id} />
             </div>
           </ScrollArea>
         </div>

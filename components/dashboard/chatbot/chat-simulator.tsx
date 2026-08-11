@@ -7,7 +7,7 @@ import { Bot, RefreshCw, Send, User } from "lucide-react";
 import React, { RefObject } from "react";
 
 interface ChatbotSimulatorProps {
-  messages: any[];
+  messages: ChatMessage[];
   primaryColor: string;
   sections: Section[];
   input: string;
