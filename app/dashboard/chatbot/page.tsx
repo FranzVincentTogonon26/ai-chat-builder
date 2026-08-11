@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ChatSimulator from "@/components/dashboard/chatbot/chat-simulator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ApperanceConfig from "@/components/dashboard/chatbot/appearance-config";
 import EmbedCodeConfig from "@/components/dashboard/chatbot/embed-code-config";
+import toast from "react-hot-toast";
 
 const ChatbotPage = () => {
   const [metadata, setMetadata] = useState<ChatbotMetadata | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
-  const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -20,45 +20,55 @@ const ChatbotPage = () => {
 
   const scrollViewportRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  const fetchData = useCallback(async () => {
+    const metaRes = await fetch("/api/chatbot/metadata/fetch");
+    const metaData = await metaRes.json();
 
-        const metaRes = await fetch("/api/chatbot/metadata/fetch");
-        const metaData = await metaRes.json();
-        setMetadata(metaData);
+    const sectionsRes = await fetch("/api/section/fetch");
+    const sectionsData = sectionsRes.ok ? await sectionsRes.json() : [];
 
-        if (metaData) {
-          setPrimaryColor(metaData.color || "#4f46e5");
-          setWelcomeMessage(
-            metaData.welcome_message || "Hi, How can I help you today?",
-          );
-          setMessages([
-            {
-              role: "assistant",
-              content:
-                metaData.welcome_message || "Hi, How can I help you today?",
-              isWelcome: true,
-              section: null,
-            },
-          ]);
-        }
-
-        const sectionsRes = await fetch("/api/section/fetch");
-        if (sectionsRes.ok) {
-          const sectionsData = await sectionsRes.json();
-          setSections(sectionsData || []);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    return { metaData, sectionsData };
   }, []);
+
+  const applyData = (
+    metaData: ChatbotMetadata | null,
+    sectionsData: Section[],
+  ) => {
+    setMetadata(metaData);
+    if (metaData) {
+      setPrimaryColor(metaData.color || "#4f46e5");
+      setWelcomeMessage(
+        metaData.welcome_message || "Hi, How can I help you today?",
+      );
+      setMessages([
+        {
+          role: "assistant",
+          content:
+            metaData.welcome_message || "Hi, How can I help you today?",
+          isWelcome: true,
+          section: null,
+        },
+      ]);
+    }
+    setSections(sectionsData || []);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchData()
+      .then(({ metaData, sectionsData }) => {
+        if (cancelled) return;
+        applyData(metaData, sectionsData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        toast.error("Error fetching data");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchData]);
 
   useEffect(() => {
     if (scrollViewportRef.current) {
@@ -111,7 +121,32 @@ const ChatbotPage = () => {
     ]);
   };
 
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/chatbot/metadata/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          color: primaryColor,
+          welcome_message: welcomeMessage,
+        }),
+      });
+
+      if (res.ok) {
+        const { metaData, sectionsData } = await fetchData();
+        applyData(metaData, sectionsData);
+        toast.success("Metadata successfully updated.");
+      } else {
+        toast.error("Failed to save changes");
+      }
+    } catch (error) {
+      console.error("Failed to save:", error);
+      toast.error("Failed to save");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const hasChanges = metadata
     ? primaryColor !== (metadata.color || "#4f46e5") ||
