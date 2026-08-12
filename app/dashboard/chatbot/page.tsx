@@ -101,11 +101,13 @@ const ChatbotPage = () => {
         }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        toast.error(`Request failed with status ${res.status}`);
+        toast.error(data.error || `Request failed with status ${res.statusText}`);
+        return;
       }
 
-      const data = await res.json();
       setMessages((prev) => [
         ...prev,
         {
