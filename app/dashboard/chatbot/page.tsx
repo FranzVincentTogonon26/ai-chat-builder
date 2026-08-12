@@ -43,8 +43,7 @@ const ChatbotPage = () => {
       setMessages([
         {
           role: "assistant",
-          content:
-            metaData.welcome_message || "Hi, How can I help you today?",
+          content: metaData.welcome_message || "Hi, How can I help you today?",
           isWelcome: true,
           section: null,
         },
@@ -77,7 +76,50 @@ const ChatbotPage = () => {
   }, [messages, isTyping]);
 
   const handleSend = async () => {
-    // setActiveSection(sectionName)
+    if (!input.trim()) return;
+
+    const currentSections = sections.find((s) => s.name === activeSection);
+    const sourceIds = currentSections?.source_ids || [];
+
+    const userMsg: ChatMessage = {
+      role: "user",
+      content: input,
+      section: activeSection,
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setIsTyping(true);
+
+    try {
+      const res = await fetch("/api/chat/playground", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMsg],
+          knowledge_source_ids: sourceIds,
+        }),
+      });
+
+      if (!res.ok) {
+        toast.error(`Request failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.response,
+          section: null,
+        },
+      ]);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      toast.error("Failed to get a response. Please try again.");
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent) => {
