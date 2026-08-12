@@ -39,24 +39,27 @@ const ConfirmDialog = ({
   onConfirm,
 }: ConfirmDialogProps) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
-    <AlertDialogContent>
+    <AlertDialogContent className="bg-[#0A0A0E] border border-white/10">
       <AlertDialogHeader>
         <AlertDialogMedia
           className={
             variant === "destructive"
               ? "bg-red-500/10 text-red-500"
-              : "bg-muted text-foreground"
+              : "bg-muted text-white"
           }
         >
           <TriangleAlert />
         </AlertDialogMedia>
-        <AlertDialogTitle>{title}</AlertDialogTitle>
+        <AlertDialogTitle className="text-white">{title}</AlertDialogTitle>
         {description && (
           <AlertDialogDescription>{description}</AlertDialogDescription>
         )}
       </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel onClick={() => onOpenChange(false)}>
+      <AlertDialogFooter className="bg-white/5 border-t border-white/10">
+        <AlertDialogCancel
+          onClick={() => onOpenChange(false)}
+          variant="default"
+        >
           {cancelLabel}
         </AlertDialogCancel>
         <AlertDialogAction

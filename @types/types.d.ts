@@ -80,3 +80,23 @@ interface FormDataSection {
   blockedTopics: string;
   fallbackBehavior: string;
 }
+
+// Chatbot
+
+type ChatRole = "user" | "assistant";
+
+interface ChatMessage {
+  role: ChatRole;
+  content: string;
+  isWelcome?: boolean;
+  section: string | null;
+}
+
+interface ChatbotMetadata {
+  id: string,
+  user_email: string,
+  color: string,
+  welcome_message: string,
+  created_at: string,
+  source_ids: string[]
+}

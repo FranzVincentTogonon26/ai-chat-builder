@@ -85,3 +85,11 @@ export const TONE_OPTIONS = [
     description: "Support-first, apologetic, and calming.",
   },
 ];
+
+export const PRESENT_COLORS = [
+  { name: "Indigo", value: "#4f46e5" },
+  { name: "Blue", value: "#2563eb" },
+  { name: "Emerald", value: "#059669" },
+  { name: "Rose", value: "#e11d48" },
+  { name: "Orange", value: "#ea580c" },
+];
