@@ -93,10 +93,28 @@ interface ChatMessage {
 }
 
 interface ChatbotMetadata {
-  id: string,
-  user_email: string,
-  color: string,
-  welcome_message: string,
-  created_at: string,
-  source_ids: string[]
+  id: string;
+  user_email: string;
+  color: string;
+  welcome_message: string;
+  created_at: string;
+  source_ids: string[];
+}
+
+// Settings
+
+interface OrganizationData {
+  id: string;
+  business_name: string;
+  website_url: string;
+  created_at: string;
+}
+
+interface TeamMember {
+  id: string;
+  name: string;
+  user_email: string;
+  image?: string;
+  role?: string;
+  status?: string;
 }

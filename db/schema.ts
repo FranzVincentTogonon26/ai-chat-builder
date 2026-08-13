@@ -52,7 +52,7 @@ export const sections = pgTable("sections", {
   status: text("status").notNull().default("active"),
   created_at: text("created_at").default(sql`now()`),
 });
-  
+
 export const chatBotMetadata = pgTable("chatBotMetadata", {
   id: text("id")
     .primaryKey()
@@ -62,5 +62,17 @@ export const chatBotMetadata = pgTable("chatBotMetadata", {
   welcome_message: text("welcome_message").default(
     "Hi there, How can I help you today?",
   ),
+  created_at: text("created_at").default(sql`now()`),
+});
+
+export const team_members = pgTable("team_members", {
+  id: text("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  user_email: text("user_email").notNull(),
+  name: text("name").notNull(),
+  organization_id: text("organization_id").notNull(),
+  role: text("role").notNull().default("member"),
+  status: text("status").notNull().default("pending"),
   created_at: text("created_at").default(sql`now()`),
 });
