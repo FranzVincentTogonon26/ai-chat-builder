@@ -1,6 +1,8 @@
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -154,6 +156,36 @@ const TeamSection = () => {
           </DialogContent>
         </Dialog>
       </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {isLoading ? (
+            <div className="text-center py-4 text-zinc-500 text-sm">
+              Loading team..
+            </div>
+          ) : team.length > 0 ? (
+            <div className="text-center py-4 text-zinc-500 text-sm">
+              No team meber found.
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {team.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-3 rounded-lg border bg-white/1 hover:bg-white/2 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9 border border-white/10">
+                      <AvatarFallback className="bg-zinc-800 text-zinc-400">
+                        {member.name?.slice(0, 2).toUpperCase() || "UN"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </CardContent>
     </Card>
   );
 };
