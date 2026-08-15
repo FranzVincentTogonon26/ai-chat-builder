@@ -81,6 +81,8 @@ const InitialForm = () => {
   };
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
+
     const response = await fetch("/api/metadata/store", {
       method: "POST",
       headers: {
@@ -93,8 +95,11 @@ const InitialForm = () => {
       }),
     });
 
-    await response.json();
-    setIsSubmitting(false);
+    if (!response.ok) {
+      setIsSubmitting(false);
+      return;
+    }
+
     window.location.reload();
   };
 

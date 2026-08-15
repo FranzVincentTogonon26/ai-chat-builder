@@ -118,3 +118,21 @@ interface TeamMember {
   role?: string;
   status?: string;
 }
+
+//  Conversations
+
+interface Conversation {
+  id: string;
+  user: string;
+  lastMessage: string;
+  time: string;
+  email?: string;
+  visitor_ip?: string;
+}
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  created_at: string;
+}

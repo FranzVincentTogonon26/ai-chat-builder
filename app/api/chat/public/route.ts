@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { conversation, knowledge } from "@/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
 import { messages as messagesTable } from "@/db/schema";
@@ -21,12 +21,14 @@ export async function POST(req: NextRequest) {
 
   let sessionId: string | undefined;
   let widgetId: string | undefined;
+  let ownerEmail: string | undefined;
 
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
     const { payload } = await jwtVerify(token, secret);
     sessionId = payload.sessionId as string;
     widgetId = payload.widgetId as string;
+    ownerEmail = payload.ownerEmail as string;
 
     if (!sessionId || !widgetId) {
       throw new Error("Invalid session token");
@@ -110,7 +112,12 @@ export async function POST(req: NextRequest) {
       const sources = await db
         .select({ content: knowledge.content })
         .from(knowledge)
-        .where(inArray(knowledge.id, knowledge_source_ids));
+        .where(
+          and(
+            eq(knowledge.user_email, ownerEmail),
+            inArray(knowledge.id, knowledge_source_ids),
+          ),
+        );
 
       context = sources
         .map((s) => s.content)
