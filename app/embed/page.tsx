@@ -26,7 +26,12 @@ const EmbedPage = () => {
   const [error, setError] = useState("");
 
   const scrollViewportRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<ChatMessage[]>([]);
   const primaryColor = metadata?.color || "#4f46e5";
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   useEffect(() => {
     document.body.style.backgroundColor = "transparent";
@@ -77,6 +82,7 @@ const EmbedPage = () => {
 
     const fetchConfig = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`/api/widget/config?token=${token}`);
         if (!res.ok) throw new Error("Failed to load Widget configurations");
 
@@ -141,45 +147,51 @@ const EmbedPage = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    const sourceIds = [] as string[];
+    const currentSection = sections.find((s) => s.name === activeSection);
+    const sourceIds = currentSection?.source_ids || [];
 
     const userMsg: ChatMessage = {
       role: "user",
       content: input,
-      section: null,
+      section: activeSection,
     };
-
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsTyping(true);
 
     try {
-      const res = await fetch("/api/chat/playground", {
+      const res = await fetch("/api/chat/public", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
-          messages: [...messages, userMsg],
+          messages: [...messagesRef.current, userMsg],
           knowledge_source_ids: sourceIds,
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(
-          data.error || `Request failed with status ${res.statusText}`,
-        );
-        return;
+      if (res.ok) {
+        const data = await res.json();
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: data.response,
+            section: null,
+          },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "I'm having trouble connecting right now. Please try again.",
+            section: null,
+          },
+        ]);
       }
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: data.response,
-          section: null,
-        },
-      ]);
     } catch (error) {
       console.error("Failed to send message:", error);
       toast.error("Failed to get a response. Please try again.");
@@ -281,7 +293,7 @@ const EmbedPage = () => {
                   )}
                 </div>
 
-                <div className="space-y2">
+                <div className="space-y-2">
                   <div
                     className={cn(
                       `p-4 rounded-xl text-sm leading-relaxed shadow-sm `,
@@ -353,15 +365,15 @@ const EmbedPage = () => {
           <Button
             size="icon"
             onClick={handleSend}
-            disabled={!activeSection || !input.trim()}
+            disabled={!activeSection || !input.trim() || isTyping}
             className={cn(
               `absolute right-2 bottom-2 h-8 w-8 transition-colors`,
-              !activeSection || !input.trim()
+              !activeSection || !input.trim() || isTyping
                 ? "bg-zinc-800 text-zinc-500"
                 : "",
             )}
             style={
-              activeSection && input.trim()
+              activeSection && input.trim() && !isTyping
                 ? { backgroundColor: primaryColor }
                 : {}
             }
