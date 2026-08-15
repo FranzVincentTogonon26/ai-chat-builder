@@ -187,7 +187,8 @@ const EmbedPage = () => {
           ...prev,
           {
             role: "assistant",
-            content: "I'm having trouble connecting right now. Please try again.",
+            content:
+              "I'm having trouble connecting right now. Please try again.",
             section: null,
           },
         ]);
@@ -241,12 +242,14 @@ const EmbedPage = () => {
             </div>
             <div className="absolute bottom-0 -right-0.5 w-2.5 h-2.5 bg-emerald-600 rounded-full border border-white"></div>
           </div>
-          <h1 className="text-sm font-semibold text-white leading-none">
-            Support
-          </h1>
-          <span className="text-[11px] text-emerald-400 font-medium">
-            Online
-          </span>
+          <div className="flex flex-col leading-none space-y-1">
+            <h1 className="text-sm font-semibold text-white leading-none">
+              Support
+            </h1>
+            <span className="text-[11px] text-emerald-400 font-medium">
+              Online
+            </span>
+          </div>
         </div>
         <button
           onClick={toggleOpen}
