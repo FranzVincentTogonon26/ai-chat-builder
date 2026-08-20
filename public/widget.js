@@ -11,10 +11,7 @@
       return;
     }
 
-    var widgetBaseUrl = script.src.substring(
-      0,
-      script.src.lastIndexOf("/"),
-    );
+    var widgetBaseUrl = script.src.substring(0, script.src.lastIndexOf("/"));
 
     fetch(widgetBaseUrl + "/api/widget/session", {
       method: "POST",
@@ -37,9 +34,7 @@
 
         var iframe = document.createElement("iframe");
         iframe.src =
-          widgetBaseUrl +
-          "/embed?token=" +
-          encodeURIComponent(data.token);
+          widgetBaseUrl + "/embed?token=" + encodeURIComponent(data.token);
         iframe.setAttribute("title", "Chatbot Support");
         iframe.style.position = "fixed";
         iframe.style.bottom = "20px";

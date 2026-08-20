@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
   Bot,
@@ -22,6 +23,7 @@ const ConversationPage = () => {
   const [isLoadingList, setIsLoadingList] = useState(true);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   const [replyContent, setReplyContent] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -71,6 +73,7 @@ const ConversationPage = () => {
   const handleSendReply = async () => {
     if (!replyContent.trim() || !selectedId) return;
     setIsSending(true);
+    setIsTyping(true);
 
     try {
       const res = await fetch(`/api/conversations/${selectedId}/reply`, {
@@ -106,6 +109,7 @@ const ConversationPage = () => {
       console.error("Failed to send reply:", error);
     } finally {
       setIsSending(false);
+      setIsTyping(false);
     }
   };
 
@@ -125,7 +129,7 @@ const ConversationPage = () => {
   const selectedConv = conversations?.find((c) => c.id === selectedId);
 
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-black animate-in fade-in duration-500">
+    <div className="flex h-screen overflow-hidden bg-black animate-in fade-in duration-500">
       <div className="w-[350px] md:w-[400px] flex flex-col border-r border-white/5 bg-[#050509]">
         <div className="p-4 border-b border-white/5 space-y-4">
           <div className="flec items-center justify-between">
@@ -135,7 +139,7 @@ const ConversationPage = () => {
             </div>
           </div>
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500" />
+            <Search className="absolute left-2.5 top-2 h-4 w-4 text-zinc-500" />
             <Input
               placeholder="Search..."
               className="pl-9 bg-[#0A0A0E] border-white/10 border text-sm focus-visible"
@@ -163,7 +167,7 @@ const ConversationPage = () => {
                   className={cn(
                     "flex flex-col items-start gap-2 p-4 text-left transition-colors border-b border-white/5 hover:bg-white/2 cursor-pointer",
                     selectedId === conversation.id
-                      ? "bg-white/4 border-l-2 border-l-indigo-500 border-b-transparent"
+                      ? "bg-white/4 border-l-2 border-l-[#2563eb] border-b-transparent"
                       : "border-l-2 border-l-transparent",
                   )}
                 >
@@ -200,7 +204,7 @@ const ConversationPage = () => {
       <div className="flex-1 flex flex-col min-w-0 bg-[#0a0a0e]">
         {selectedConv ? (
           <>
-            <div className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#0E0E12]">
+            <div className="py-3 border-b border-white/5 flex items-center justify-between px-6 bg-[#0E0E12]">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
                   <User className="w-4 h-4 text-zinc-400" />
@@ -226,92 +230,102 @@ const ConversationPage = () => {
                 <MoreHorizontal className="w-4 h-4" />
               </Button>
             </div>
-
-            <ScrollArea className="flex-1 p-6">
-              {isLoadingMessages ? (
-                <div className="flex items-center justify-center p-10">
-                  <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
-                </div>
-              ) : (
-                <div className="max-w-3xl mx-auto space-y-6">
-                  {currentMessages.map((msg) => (
+            {isLoadingMessages ? (
+              <div className="flex items-center justify-center p-10 h-screen">
+                <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
+                <span className="text-sm text-zinc-500 ml-2">
+                  Loading messages...
+                </span>
+              </div>
+            ) : (
+              <ScrollArea className="min-h-0 flex-1 p-6 relative bg-zinc-950/30">
+                <div className="space-y-6 pb-4">
+                  {currentMessages.map((msg, i) => (
                     <div
-                      key={msg.id}
+                      key={i}
                       className={cn(
-                        "flex w-full gap-3",
-                        msg.role === "user" ? "flex-row-reverse" : "flex-row",
+                        `flex w-full flex-col`,
+                        msg.role === "user" ? "items-end" : "items-start",
                       )}
                     >
                       <div
                         className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center shrink-0  border border-white/5",
-                          msg.role === "user" ? "bg-zinc-800" : "bg-indigo-600",
-                        )}
-                      >
-                        {msg.role === "user" ? (
-                          <User className="w-4 h-4 text-zinc-400" />
-                        ) : (
-                          <div className="relative">
-                            <div className="w-8 h-8 rounded-full flex items-center justify-center">
-                              <Bot className="w-4 h-4" />
-                            </div>
-                            <div className="absolute bottom-1 -right-1 w-2.5 h-2.5 bg-emerald-600 rounded-full  border border-white"></div>
-                          </div>
-                        )}
-                      </div>
-                      <div
-                        className={cn(
-                          "flex flex-col gap-1 max-w-[70%]",
-                          msg.role === "user" ? "items-end" : "items-start",
+                          `flex max-w-[80%] gap-3 `,
+                          msg.role === "user" ? "flex-row-reverse" : "flex-row",
                         )}
                       >
                         <div
                           className={cn(
-                            "p-3 rounded-lg text-sm leading-relaxed",
+                            `w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-white/5`,
                             msg.role === "user"
-                              ? "bg-zinc-800 text-zinc-200"
-                              : "bg-[#050509] border border-white/10 text-zinc-300",
+                              ? "bg-zinc-800"
+                              : "text-white bg-[#2563eb] border-[#2563eb]",
                           )}
                         >
-                          {msg.content}
+                          {msg.role === "user" ? (
+                            <User className="w-4 h-4 text-zinc-400" />
+                          ) : (
+                            <Bot className="w-4 h-4 text-white" />
+                          )}
                         </div>
-                        <span className="text-[10px] text-zinc-600 px-1">
-                          {msg.created_at
-                            ? new Date(msg.created_at).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : ""}
-                        </span>
+
+                        <div className="space-y2">
+                          <div
+                            className={cn(
+                              `p-4 rounded-xl text-sm leading-relaxed shadow-sm `,
+                              msg.role === "user"
+                                ? "bg-zinc-800 text-zinc-200 rounded-tr-xs"
+                                : "bg-white text-zinc-900 rounded-tl-xs ",
+                            )}
+                          >
+                            {msg.content}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}
+
+                  {isTyping && (
+                    <div className="flex w-full justify-start">
+                      <div className="flex max-w-[80%] gap-3 flex-row">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-white/5">
+                          <Bot className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="p-4 rounded-2xl bg-white text-zinc-900 rounded-tl-sm shadow-sm flex items-center gap-1">
+                          <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                          <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                          <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div ref={messagesRef} />
                 </div>
-              )}
-            </ScrollArea>
+              </ScrollArea>
+            )}
 
-            <div className="p-4 border-t border-white/5 bg-[#0e0e12]">
-              <div className="max-w-3xl mx-auto flex gap-2">
-                <Input
+            <div className="p-2 border-t border-white/5 bg-[#0e0e12]">
+              <div className="relative">
+                <Textarea
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Type your reply.."
-                  className="bg-zinc-900/50 border border-white/10 text-zinc-200 placeholder:text-zinc-600"
                   disabled={isSending}
+                  placeholder="Type your reply.."
+                  className="min-h-12.5 max-h-37.5 pr-12 outline-none  border-white/5 bg-[#0A0A0E] disabled:bg-[#0A0A0E] text-white resize-none"
                 />
                 <Button
                   size="icon"
                   onClick={handleSendReply}
-                  disabled={!replyContent.trim() || isSending}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white"
-                >
-                  {isSending ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4" />
+                  disabled={isSending || !replyContent.trim()}
+                  className={cn(
+                    `absolute right-2 bottom-2 h-8 w-8 transition-colors`,
+                    isSending || !replyContent.trim()
+                      ? "bg-zinc-800 text-zinc-500"
+                      : "",
                   )}
+                >
+                  <Send className="w-4 h-4" />
                 </Button>
               </div>
             </div>
