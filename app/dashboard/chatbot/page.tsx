@@ -47,7 +47,7 @@ const ChatbotPage = () => {
           isWelcome: true,
           section: null,
         },
-      ]);
+      ]); 
     }
     setSections(sectionsData || []);
   };
