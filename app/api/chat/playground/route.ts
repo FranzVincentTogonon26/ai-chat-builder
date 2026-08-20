@@ -3,7 +3,7 @@ import { knowledge } from "@/db/schema";
 import { countConversationToken } from "@/lib/countConversationTokens";
 import { summarizeConversation, systemRoleContext } from "@/lib/gemini";
 import { isAuthorized } from "@/lib/isAuthorized";
-import { inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -36,7 +36,9 @@ export async function POST(req: NextRequest) {
       const sources = await db
         .select({ content: knowledge.content })
         .from(knowledge)
-        .where(inArray(knowledge.id, knowledgeSourceIds));
+        .where(
+          and(eq(knowledge.user_email, user.email), inArray(knowledge.id, knowledgeSourceIds)),
+        );
 
       context = sources
         .map((s) => s.content)

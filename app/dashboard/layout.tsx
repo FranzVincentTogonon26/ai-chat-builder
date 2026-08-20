@@ -1,5 +1,7 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { metadata as workspaceMetadata } from "@/db/schema";
 import { isAuthorized } from "@/lib/isAuthorized";
 import Sidebar from "@/components/dashboard/sidebar";
 
@@ -18,12 +20,15 @@ export default async function DashboardLayout({
     redirect("/");
   }
 
-  const cookieStore = await cookies();
-  const metadataCookie = cookieStore.get("metadata");
+  const [metadataRecord] = await db
+    .select({ id: workspaceMetadata.id })
+    .from(workspaceMetadata)
+    .where(eq(workspaceMetadata.user_email, user.email))
+    .limit(1);
 
   return (
     <section className="bg-[#050509] min-h-screen font-sans antialiased text-zinc-100 selection:bg-zinc-800 flex">
-      {metadataCookie?.value ? (
+      {metadataRecord ? (
         <>
           <Sidebar />
           <div className="flex-1 flex flex-col md:ml-64 relative min-h-screen transition-all duration-300">

@@ -11,7 +11,9 @@
       return;
     }
 
-    fetch("http://localhost:3000/api/widget/session", {
+    var widgetBaseUrl = script.src.substring(0, script.src.lastIndexOf("/"));
+
+    fetch(widgetBaseUrl + "/api/widget/session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +34,7 @@
 
         var iframe = document.createElement("iframe");
         iframe.src =
-          "http://localhost:3000/embed?token=" + encodeURIComponent(data.token);
+          widgetBaseUrl + "/embed?token=" + encodeURIComponent(data.token);
         iframe.setAttribute("title", "Chatbot Support");
         iframe.style.position = "fixed";
         iframe.style.bottom = "20px";

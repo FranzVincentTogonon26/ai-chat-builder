@@ -66,7 +66,7 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4">
+      <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4 scroll-fade scrollbar-none  scroll-fade-none">
         {SIDEBAR_ITEMS.map((item) => {
           const isActive = pathname === item.href;
 

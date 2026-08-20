@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { File, Filter, Globe, Search, Upload } from "lucide-react";
+import { File, FileText, Filter, Globe, Search, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const getTypeIcon = (type: SourceType) => {
@@ -22,6 +22,8 @@ export const getTypeIcon = (type: SourceType) => {
       return <Upload className="w-4 h-4 text-emerald-400" />;
     case "text":
       return <File className="w-4 h-4 text-zinc-400" />;
+    case "docs":
+      return <FileText className="w-4 h-4 text-indigo-400" />;
   }
 };
 

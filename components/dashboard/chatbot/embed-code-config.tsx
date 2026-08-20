@@ -3,16 +3,24 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Check, Code, Copy } from "lucide-react";
-import React, { useState } from "react";
+import React, { useSyncExternalStore, useState } from "react";
+
+const getServerSnapshot = (): string => "";
+const subscribe = (): (() => void) => () => {};
 
 const EmbedCodeConfig = ({ chatbotId }: { chatbotId?: string }) => {
   const [copied, setCopied] = useState(false);
+  const appOrigin = useSyncExternalStore(
+    subscribe,
+    () => window.location.origin,
+    getServerSnapshot,
+  );
+
+  const embedCode = `<script src="${appOrigin}/widget.js" data-id="${chatbotId}" defer></script>`;
 
   const handleCopyCode = () => {
     setCopied(true);
-    navigator.clipboard.writeText(
-      `<script src="http://localhost:3000/widget.js" data-id="${chatbotId}" defer></script>`,
-    );
+    navigator.clipboard.writeText(embedCode);
     setTimeout(() => setCopied(false), 2000);
   };
   return (
@@ -29,7 +37,7 @@ const EmbedCodeConfig = ({ chatbotId }: { chatbotId?: string }) => {
         <div className="relative group">
           <div className="bg-[#050509] border border-white/10 rounded-lg p-3 overflow-hidden">
             <code className="text-[10px] text-zinc-400 font-mono block overflow-x-auto">
-              {`<script src="http://localhost:3000/widget.js" data-id="${chatbotId}" defer></script>`}
+              {embedCode}
             </code>
           </div>
           <Button

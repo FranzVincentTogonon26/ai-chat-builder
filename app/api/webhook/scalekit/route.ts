@@ -8,12 +8,19 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.text();
     const headers = Object.fromEntries(req.headers.entries());
-    const secret = process.env.GEMINI_API_KEY!;
+    const secret = process.env.SCALEKIT_WEBHOOK_KEY!;
 
-    try {
-      scalekit.verifyInterceptorPayload(secret, headers, body);
-    } catch (error) {
-      console.error("Webhooks verification failed:", error);
+    if (!secret) {
+      return NextResponse.json(
+        { error: "Webhook secret is not configured" },
+        { status: 500 },
+      );
+    }
+
+    const isValid = scalekit.verifyWebhookPayload(secret, headers, body);
+
+    if (!isValid) {
+      console.error("Webhook verification failed");
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 

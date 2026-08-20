@@ -126,7 +126,7 @@ const SettingPage = () => {
                 <Trash2 className="w-4 h-4 nr-2" />
                 Delete
               </AlertDialogTrigger>
-              <AlertDialogContent className="bg-[#oEoE12] border border-white/10">
+              <AlertDialogContent className="bg-[#0E0E12] border border-white/10">
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-zinc-400">
                     Are you absultely sure?
